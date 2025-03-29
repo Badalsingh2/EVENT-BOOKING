@@ -41,7 +41,7 @@ export default function AdminEventsPage() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/admin/all_events', {
+      const response = await fetch('https://event-booking-k8id.onrender.com/admin/all_events', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -81,7 +81,7 @@ export default function AdminEventsPage() {
     const toastId = toast.loading(`Updating event to ${status}...`)
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/events/${eventId}/${status}`, {
+      const response = await fetch(`https://event-booking-k8id.onrender.com/events/${eventId}/${status}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,

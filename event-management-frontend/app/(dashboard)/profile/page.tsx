@@ -59,7 +59,7 @@ export default function UserProfilePage() {
           return;
         }
 
-        const response = await fetch(`http://127.0.0.1:8000/events/users/${userId}`, {
+        const response = await fetch(`https://event-booking-k8id.onrender.com/events/users/${userId}`, {
           headers: {
             "Authorization": `Bearer ${token}`,
           },
@@ -85,7 +85,7 @@ export default function UserProfilePage() {
       const eventDetails = await Promise.all(
         bookedEvents.map(async (booking) => {
           try {
-            const response = await fetch(`http://127.0.0.1:8000/events/get_e/${booking.event_id}`);
+            const response = await fetch(`https://event-booking-k8id.onrender.com/events/get_e/${booking.event_id}`);
             if (response.ok) {
               const eventData: Event = await response.json();
               return { ...eventData, user_email: booking.user_email };

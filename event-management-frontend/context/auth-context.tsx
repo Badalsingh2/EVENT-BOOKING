@@ -30,7 +30,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('http://127.0.0.1:8000/auth/login', {
+    const response = await fetch('https://event-booking-k8id.onrender.com/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -59,7 +59,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }
 
   const register = async (userData: { email: string; full_name: string; password: string; role: string }) => {
-    const response = await fetch('http://127.0.0.1:8000/auth/register', {
+    const response = await fetch('https://event-booking-k8id.onrender.com/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),

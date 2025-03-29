@@ -85,7 +85,7 @@ async def list_approved_events(user=Depends(role_required(["organizer"]))):
 
 
 @router.get("/users/{user_id}", response_model=UserInDB)
-async def get_user_details(user_id: str, user: dict = Depends(role_required(["attendee"]))):
+async def get_user_details(user_id: str):
     
     try:
         obj_id = ObjectId(user_id)  # Convert user_id to ObjectId

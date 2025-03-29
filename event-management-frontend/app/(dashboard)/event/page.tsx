@@ -39,7 +39,7 @@ export default function EventsPage() {
         const token = localStorage.getItem('token')
         if (!token) throw new Error('No token found')
 
-        const response = await fetch('http://127.0.0.1:8000/events/organize_events', {
+        const response = await fetch('https://event-booking-k8id.onrender.com/events/organize_events', {
           method: 'GET',
           headers: {
             'Authorization': `Bearer ${token}`,

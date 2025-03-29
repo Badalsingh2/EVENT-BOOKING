@@ -39,7 +39,7 @@ export default function AdminOrganizersPage() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/admin/organizers', {
+      const response = await fetch('https://event-booking-k8id.onrender.com/admin/organizers', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
@@ -78,7 +78,7 @@ export default function AdminOrganizersPage() {
     const toastId = toast.loading(`Updating organizer to ${status}...`)
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/admin/organizers/${userId}`, {
+      const response = await fetch(`https://event-booking-k8id.onrender.com/admin/organizers/${userId}`, {
         method: 'PUT',
         headers: {
           'Authorization': `Bearer ${token}`,
@@ -129,7 +129,7 @@ export default function AdminOrganizersPage() {
     const toastId = toast.loading('Deleting organizer...')
     
     try {
-      const response = await fetch(`http://127.0.0.1:8000/admin/organizers/${userId}`, {
+      const response = await fetch(`https://event-booking-k8id.onrender.com/admin/organizers/${userId}`, {
         method: 'DELETE',
         headers: {
           'Authorization': `Bearer ${token}`,

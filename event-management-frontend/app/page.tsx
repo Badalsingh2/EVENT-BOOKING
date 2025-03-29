@@ -32,7 +32,7 @@ export default function Home() {
     useEffect(() => {
         const fetchEvents = async () => {
             try {
-                const res = await fetch('http://127.0.0.1:8000/events/');
+                const res = await fetch('https://event-booking-k8id.onrender.com/events/');
                 const data = await res.json();
                 setEvents(data);
             } catch (err) {
@@ -81,7 +81,7 @@ export default function Home() {
         }
     
         try {
-            const response = await fetch('http://127.0.0.1:8000/bookings/book', {
+            const response = await fetch('https://event-booking-k8id.onrender.com/bookings/book', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',

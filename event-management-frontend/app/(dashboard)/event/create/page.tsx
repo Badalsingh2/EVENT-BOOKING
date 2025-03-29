@@ -77,7 +77,7 @@ export default function CreateEvent() {
     
     try {
       const token = localStorage.getItem('token')
-      const response = await fetch('http://127.0.0.1:8000/events/create', {
+      const response = await fetch('https://event-booking-k8id.onrender.com/events/create', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
