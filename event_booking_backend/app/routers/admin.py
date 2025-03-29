@@ -158,3 +158,28 @@ async def get_all_organizers(
 
 
 
+@router.delete("/organizers/{user_id}", status_code=status.HTTP_204_NO_CONTENT)
+async def delete_organizer(
+    user_id: str,
+    admin: dict = Depends(get_current_admin)  # Ensure only admin can access
+):
+    """
+    Delete an organizer by ID (Admin-only)
+    """
+    try:
+        obj_id = ObjectId(user_id)
+    except:
+        raise HTTPException(status.HTTP_400_BAD_REQUEST, detail="Invalid ID format")
+
+    # Check if the user exists and is an organizer
+    organizer = await db.users.find_one({"_id": obj_id, "role": RoleEnum.organizer})
+    if not organizer:
+        raise HTTPException(status.HTTP_404_NOT_FOUND, detail="Organizer not found")
+
+    # Delete the organizer
+    result = await db.users.delete_one({"_id": obj_id})
+
+    if result.deleted_count == 0:
+        raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete organizer")
+
+    return {"message": "Organizer deleted successfully"}

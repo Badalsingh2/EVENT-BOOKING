@@ -37,7 +37,7 @@ export default function LoginPage() {
                 // Redirect based on user role
                 switch (user.role?.toLowerCase()) {
                     case 'admin':
-                        router.push('/admin')
+                        router.push('/admin/organizers')
                         break
                     case 'organizer':
                         router.push('/event')
