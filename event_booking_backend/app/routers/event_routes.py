@@ -86,10 +86,8 @@ async def list_approved_events(user=Depends(role_required(["organizer"]))):
 
 @router.get("/users/{user_id}", response_model=UserInDB)
 async def get_user_details(user_id: str):
-    
     try:
         obj_id = ObjectId(user_id)  # Convert user_id to ObjectId
-        print(obj_id)
     except:
         raise HTTPException(status_code=400, detail="Invalid user ID format")
 
@@ -98,8 +96,25 @@ async def get_user_details(user_id: str):
     if not user_data:
         raise HTTPException(status_code=404, detail="User not found")
 
-    user_data["id"] = str(user_data["_id"])  # Convert ObjectId to string
+    # Convert ObjectId to string
+    user_data["id"] = str(user_data["_id"])
+
+    # ✅ Ensure booked_events contains only IDs, not full event objects
+    if "booked_events" in user_data:
+        event_ids = []
+        for event in user_data["booked_events"]:
+            if isinstance(event, dict) and "_id" in event:
+                event_ids.append(str(event["_id"]))  # Extract the event ID
+            elif isinstance(event, str):  
+                event_ids.append(event)  # Already a string ID
+
+        # ✅ Fetch event details safely
+        user_data["booked_events"] = [
+            await db.events.find_one({"_id": ObjectId(event_id)}) for event_id in event_ids
+        ]
+
     return user_data
+
 
 
 
