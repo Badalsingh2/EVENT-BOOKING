@@ -84,10 +84,28 @@ export function Navbar({
   // Handle rendering the correct icon based on current theme
   const isDarkMode = theme === 'dark' || (theme === 'system' && resolvedTheme === 'dark')
 
-  // Navigation items
+  // Check if user is admin directly from localStorage
+  let dashboardLink = '/'
+  let eventLink = '/event'
+  if (typeof window !== 'undefined') {
+    try {
+      const userJSON = localStorage.getItem('user')
+      if (userJSON) {
+        const userData = JSON.parse(userJSON)
+        if (userData && userData.role === 'admin') {
+          dashboardLink = '/admin'
+          eventLink = '/admin/events'
+        }
+      }
+    } catch (error) {
+      console.error('Error reading user data from localStorage:', error)
+    }
+  }
+  
+  // Navigation items with dynamic dashboard link
   const navItems = [
-    { name: 'Dashboard', href: '/', icon: <DashboardIcon className="h-4 w-4 mr-2" /> },
-    { name: 'Events', href: '/event', icon: <CalendarIcon className="h-4 w-4 mr-2" /> },
+    { name: 'Dashboard', href: dashboardLink, icon: <DashboardIcon className="h-4 w-4 mr-2" /> },
+    { name: 'Events', href: eventLink, icon: <CalendarIcon className="h-4 w-4 mr-2" /> },
     { name: 'Profile', href: '/profile', icon: <PersonIcon className="h-4 w-4 mr-2" /> }
   ]
 
