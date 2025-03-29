@@ -1,4 +1,3 @@
-// components/auth-context.tsx
 "use client"
 
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
@@ -30,7 +29,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    const response = await fetch('/api/auth/login', {
+    const response = await fetch('http://127.0.0.1:8000/auth/login', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password }),
@@ -38,13 +37,28 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
     if (!response.ok) throw new Error('Login failed')
     
-    const userData = await response.json()
+    const responseData = await response.json()
+    
+    // Extract token and user information
+    const { access_token, token_type, user_role, user_status } = responseData
+    
+    // Create a user object to match your User type
+    const userData: User = {
+      email, // Using the email from login
+      full_name: '', // You may not have this from login response
+      role: user_role,
+      status: user_status
+    }
+    
+    // Store both token and user data
+    localStorage.setItem('token', access_token)
     localStorage.setItem('user', JSON.stringify(userData))
+    
     setUser(userData)
   }
 
   const register = async (userData: { email: string; full_name: string; password: string; role: string }) => {
-    const response = await fetch('/api/auth/register', {
+    const response = await fetch('http://127.0.0.1:8000/auth/register', {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(userData),
@@ -59,6 +73,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
 
   const logout = () => {
     localStorage.removeItem('user')
+    localStorage.removeItem('token')
     setUser(null)
   }
 

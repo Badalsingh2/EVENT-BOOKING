@@ -1,6 +1,6 @@
 "use client"
 
-import Layout from "@/components/layout";
+import { AppLayout } from "@/components/layout";
 import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -67,7 +67,7 @@ export default function Home() {
     );
 
     return (
-        <Layout>
+        <AppLayout>
             <div className="min-h-screen bg-gradient-to-b from-purple-50/20 via-blue-50/10 to-transparent dark:from-purple-900/10 dark:via-blue-900/5">
                 {/* Hero Section */}
                 <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
@@ -216,7 +216,7 @@ export default function Home() {
                     )}
                 </div>
             </div>
-        </Layout>
+        </AppLayout>
     );
 }
 

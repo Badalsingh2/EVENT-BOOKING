@@ -92,6 +92,7 @@ export default function RegisterPage() {
               >
                 <option value="attendee">Event Attendee</option>
                 <option value="organizer">Event Organizer</option>
+                
               </select>
             </div>
           </div>
