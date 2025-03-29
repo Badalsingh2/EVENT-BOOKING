@@ -99,21 +99,38 @@ async def get_user_details(user_id: str):
     # Convert ObjectId to string
     user_data["id"] = str(user_data["_id"])
 
-    # ✅ Ensure booked_events contains only IDs, not full event objects
+    # ✅ Ensure booked_events only contains event_id and user_email
     if "booked_events" in user_data:
-        event_ids = []
-        for event in user_data["booked_events"]:
-            if isinstance(event, dict) and "_id" in event:
-                event_ids.append(str(event["_id"]))  # Extract the event ID
-            elif isinstance(event, str):  
-                event_ids.append(event)  # Already a string ID
-
-        # ✅ Fetch event details safely
-        user_data["booked_events"] = [
-            await db.events.find_one({"_id": ObjectId(event_id)}) for event_id in event_ids
+        event_ids = [
+            str(event["_id"]) if isinstance(event, dict) and "_id" in event else event
+            for event in user_data["booked_events"]
         ]
 
+        # ✅ Fetch event details safely and ensure required fields exist
+        booked_events = []
+        for event_id in event_ids:
+            event = await db.events.find_one({"_id": ObjectId(event_id)})
+            if event:
+                booked_events.append({
+                    "event_id": str(event["_id"]),
+                    "user_email": user_data.get("email", ""),  # Ensure user_email is included
+                    "title": event["title"],
+                    "description": event["description"],
+                    "date": event["date"],
+                    "location": event["location"],
+                    "price": event["price"],
+                    "organizer_email": event["organizer_email"],
+                    "total_seats": event["total_seats"],
+                    "available_seats": event["available_seats"],
+                    "status": event["status"],
+                    "organizer_id": str(event["organizer_id"]),
+                    "image_url": event["image_url"],
+                })
+
+        user_data["booked_events"] = booked_events  # ✅ Ensure correct format
+
     return user_data
+
 
 
 
