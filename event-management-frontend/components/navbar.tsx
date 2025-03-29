@@ -14,13 +14,10 @@ import {
 import { useTheme } from 'next-themes'
 import { Button } from '@/components/ui/button'
 import { Avatar, AvatarFallback, AvatarImage } from '@/components/ui/avatar'
-import { cn } from '@/lib/utils'
 import { motion, AnimatePresence } from 'framer-motion'
 import Link from 'next/link'
 
 interface NavbarProps {
-  onSidebarToggle: () => void
-  isSidebarOpen: boolean
   isLoggedIn?: boolean
   userProfile?: {
     name: string
@@ -30,8 +27,6 @@ interface NavbarProps {
 }
 
 export function Navbar({
-  onSidebarToggle,
-  isSidebarOpen,
   isLoggedIn = false,
   userProfile = { name: 'User' },
   onLogout = () => console.log('Logout clicked')
@@ -60,36 +55,26 @@ export function Navbar({
         setIsMobileMenuOpen(false)
       }
     }
-    
+
     window.addEventListener('resize', handleResize)
     return () => window.removeEventListener('resize', handleResize)
   }, [isMobileMenuOpen])
 
   if (!mounted) {
-    return <nav className="sticky top-0 z-40 w-full h-16 bg-white/90 dark:bg-purple-950/90 backdrop-blur-md border-b border-purple-700/30 shadow-sm" />
+    return <nav className="sticky top-0 z-40 w-full h-16 bg-gray-900 backdrop-blur-md border-b border-gray-800 shadow-sm" />
   }
 
   // Handle rendering the correct icon based on current theme
   const isDarkMode = theme === 'dark' || (theme === 'system' && resolvedTheme === 'dark')
 
   return (
-    <nav className="sticky top-0 z-40 w-full bg-white/90 dark:bg-purple-950/90 backdrop-blur-md border-b border-purple-700/30 shadow-sm">
+    <nav className="sticky top-0 z-40 w-full bg-gray-900 backdrop-blur-md border-b border-gray-800 shadow-md">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="flex items-center justify-between h-16">
-          {/* Left section - Sidebar toggle and Brand */}
+          {/* Left section - Brand */}
           <div className="flex items-center">
-            <button
-              onClick={onSidebarToggle}
-              className="mr-2 p-2 text-purple-600 dark:text-purple-300 hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-lg transition-colors"
-            >
-              {isSidebarOpen ? (
-                <ChevronLeftIcon className="h-5 w-5" />
-              ) : (
-                <ChevronRightIcon className="h-5 w-5" />
-              )}
-            </button>
             <Link href="/">
-              <span className="font-bold text-xl text-purple-800 dark:text-purple-100">
+              <span className="font-bold text-xl bg-gradient-to-r from-indigo-400 to-blue-300 bg-clip-text text-transparent">
                 EventPro
               </span>
             </Link>
@@ -97,20 +82,6 @@ export function Navbar({
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-4">
-            {/* Theme Toggle Button */}
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={toggleTheme}
-              className="text-purple-600 dark:text-purple-300"
-              title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
-            >
-              {isDarkMode ? (
-                <SunIcon className="h-5 w-5" />
-              ) : (
-                <MoonIcon className="h-5 w-5" />
-              )}
-            </Button>
 
             {/* Authentication Buttons or User Profile */}
             {isLoggedIn ? (
@@ -121,24 +92,24 @@ export function Navbar({
                   className="flex items-center space-x-2"
                 >
                   <Link href="/profile">
-                    <div className="flex items-center space-x-2 p-2 hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-lg cursor-pointer">
-                      <Avatar className="h-8 w-8 border-2 border-purple-500">
+                    <div className="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-lg cursor-pointer">
+                      <Avatar className="h-8 w-8 border-2 border-indigo-500">
                         {userProfile.image ? (
                           <AvatarImage src={userProfile.image} alt={userProfile.name} />
                         ) : (
-                          <AvatarFallback className="bg-purple-200 text-purple-700">
+                          <AvatarFallback className="bg-indigo-900 text-indigo-200">
                             {userProfile.name.substring(0, 2).toUpperCase()}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      <span className="text-purple-700 dark:text-purple-200">{userProfile.name}</span>
+                      <span className="text-gray-200">{userProfile.name}</span>
                     </div>
                   </Link>
                   <Button
                     variant="ghost"
                     size="sm"
                     onClick={onLogout}
-                    className="text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30"
+                    className="text-red-400 hover:text-red-300 hover:bg-red-900/30"
                   >
                     <ExitIcon className="h-4 w-4 mr-1" />
                     Logout
@@ -148,12 +119,12 @@ export function Navbar({
             ) : (
               <div className="flex items-center space-x-2">
                 <Link href="/login">
-                  <Button variant="ghost" size="sm" className="text-purple-600 dark:text-purple-300">
+                  <Button variant="outline" size="sm" className="cursor-pointer border-indigo-500 text-indigo-300 hover:bg-indigo-900/30">
                     Login
                   </Button>
                 </Link>
                 <Link href="/register">
-                  <Button variant="default" size="sm" className="bg-purple-600 hover:bg-purple-700 text-white">
+                  <Button variant="default" size="sm" className="cursor-pointer bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white">
                     Register
                   </Button>
                 </Link>
@@ -167,7 +138,7 @@ export function Navbar({
               variant="ghost"
               size="icon"
               onClick={toggleTheme}
-              className="text-purple-600 dark:text-purple-300 mr-2"
+              className="text-indigo-400 mr-2"
               title={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
             >
               {isDarkMode ? (
@@ -180,7 +151,7 @@ export function Navbar({
               variant="outline"
               size="icon"
               onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-              className="md:hidden text-purple-600 dark:text-purple-300 border-purple-700"
+              className="md:hidden text-indigo-400 border-gray-700"
             >
               {isMobileMenuOpen ? (
                 <Cross1Icon className="h-5 w-5" />
@@ -200,23 +171,23 @@ export function Navbar({
             animate={{ opacity: 1, height: 'auto' }}
             exit={{ opacity: 0, height: 0 }}
             transition={{ duration: 0.3 }}
-            className="md:hidden bg-white dark:bg-purple-950 border-b border-purple-700/30"
+            className="md:hidden bg-gray-900 border-b border-gray-800"
           >
             <div className="px-4 py-3 space-y-2">
               {isLoggedIn ? (
                 <>
                   <Link href="/profile" onClick={() => setIsMobileMenuOpen(false)}>
-                    <div className="flex items-center space-x-2 p-2 hover:bg-purple-100 dark:hover:bg-purple-800/50 rounded-lg">
-                      <Avatar className="h-8 w-8 border-2 border-purple-500">
+                    <div className="flex items-center space-x-2 p-2 hover:bg-gray-800 rounded-lg">
+                      <Avatar className="h-8 w-8 border-2 border-indigo-500">
                         {userProfile.image ? (
                           <AvatarImage src={userProfile.image} alt={userProfile.name} />
                         ) : (
-                          <AvatarFallback className="bg-purple-200 text-purple-700">
+                          <AvatarFallback className="bg-indigo-900 text-indigo-200">
                             {userProfile.name.substring(0, 2).toUpperCase()}
                           </AvatarFallback>
                         )}
                       </Avatar>
-                      <span className="text-purple-700 dark:text-purple-200">{userProfile.name}</span>
+                      <span className="text-gray-200">{userProfile.name}</span>
                     </div>
                   </Link>
                   <Button
@@ -225,7 +196,7 @@ export function Navbar({
                       onLogout();
                       setIsMobileMenuOpen(false);
                     }}
-                    className="w-full justify-start text-red-500 hover:text-red-700 hover:bg-red-100 dark:hover:bg-red-900/30"
+                    className="w-full justify-start text-red-400 hover:text-red-300 hover:bg-red-900/30"
                   >
                     <ExitIcon className="h-4 w-4 mr-2" />
                     Logout
@@ -234,12 +205,12 @@ export function Navbar({
               ) : (
                 <>
                   <Link href="/login" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="ghost" className="w-full justify-start text-purple-600 dark:text-purple-300">
+                    <Button variant="ghost" className="w-full justify-start text-indigo-400">
                       Login
                     </Button>
                   </Link>
                   <Link href="/register" onClick={() => setIsMobileMenuOpen(false)}>
-                    <Button variant="default" className="w-full justify-start bg-purple-600 hover:bg-purple-700 text-white">
+                    <Button variant="default" className="w-full justify-start bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white">
                       Register
                     </Button>
                   </Link>

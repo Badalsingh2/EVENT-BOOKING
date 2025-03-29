@@ -68,11 +68,11 @@ export default function Home() {
 
     return (
         <AppLayout>
-            <div className="min-h-screen bg-gradient-to-b from-purple-50/20 via-blue-50/10 to-transparent dark:from-purple-900/10 dark:via-blue-900/5">
+            <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-950">
                 {/* Hero Section */}
                 <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
-                    <div className="absolute inset-0 bg-gradient-to-br from-purple-500/20 via-blue-400/20 to-pink-500/20 dark:from-purple-600/10 dark:via-blue-600/10 dark:to-pink-600/10" />
-                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-[size:40px_40px] opacity-10 dark:opacity-5" />
+                    <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-blue-900/20 to-purple-900/30" />
+                    <div className="absolute inset-0 bg-[url('/grid.svg')] bg-[size:40px_40px] opacity-10" />
 
                     <motion.div
                         initial={{ scale: 0.95, opacity: 0 }}
@@ -82,7 +82,7 @@ export default function Home() {
                         <motion.h1
                             initial={{ opacity: 0, y: 20 }}
                             animate={{ opacity: 1, y: 0 }}
-                            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-purple-600 via-blue-500 to-pink-600 bg-clip-text text-transparent leading-tight"
+                            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 bg-clip-text text-transparent leading-tight"
                         >
                             Experience Unforgettable <br /> Moments
                         </motion.h1>
@@ -96,11 +96,11 @@ export default function Home() {
                             <input
                                 type="text"
                                 placeholder="Search events, locations, or categories..."
-                                className="w-full px-8 py-4 rounded-full border-2 border-purple-400/50 bg-white/80 dark:bg-purple-900/30 backdrop-blur-xl shadow-xl focus:outline-none focus:ring-4 focus:ring-purple-300/30 dark:focus:ring-purple-600/30 text-lg placeholder:text-purple-700/80 dark:placeholder:text-purple-300/60 transition-all"
+                                className="w-full px-8 py-4 rounded-full border-2 border-indigo-700 bg-gray-800/80 backdrop-blur-xl shadow-xl focus:outline-none focus:ring-4 focus:ring-indigo-500/30 text-lg placeholder:text-indigo-300/50 text-gray-200 transition-all"
                                 value={searchQuery}
                                 onChange={(e) => setSearchQuery(e.target.value)}
                             />
-                            <button className="absolute right-4 top-3 bg-purple-600 hover:bg-purple-700 text-white p-2 rounded-full shadow-lg transition-transform hover:scale-105">
+                            <button className="absolute right-4 top-3 bg-gradient-to-r from-indigo-600 to-blue-500 text-white p-2 rounded-full shadow-lg transition-transform hover:scale-105">
                                 <SearchIcon className="h-6 w-6" />
                             </button>
                         </motion.div>
@@ -113,12 +113,12 @@ export default function Home() {
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {[...Array(6)].map((_, i) => (
                                 <div key={i} className="flex flex-col gap-4">
-                                    <Skeleton className="h-64 rounded-3xl" />
-                                    <Skeleton className="h-6 w-3/4 rounded-full" />
-                                    <Skeleton className="h-4 w-1/2 rounded-full" />
+                                    <Skeleton className="h-64 rounded-3xl bg-gray-700/50" />
+                                    <Skeleton className="h-6 w-3/4 rounded-full bg-gray-700/50" />
+                                    <Skeleton className="h-4 w-1/2 rounded-full bg-gray-700/50" />
                                     <div className="flex justify-between mt-4">
-                                        <Skeleton className="h-10 w-24 rounded-full" />
-                                        <Skeleton className="h-10 w-32 rounded-full" />
+                                        <Skeleton className="h-10 w-24 rounded-full bg-gray-700/50" />
+                                        <Skeleton className="h-10 w-32 rounded-full bg-gray-700/50" />
                                     </div>
                                 </div>
                             ))}
@@ -130,11 +130,11 @@ export default function Home() {
                         >
                             {filteredEvents.map((event) => (
                                 <motion.div
-                                    key={event.id} // Unique key here
+                                    key={event.id}
                                     initial={{ opacity: 0, y: 20 }}
                                     animate={{ opacity: 1, y: 0 }}
                                     whileHover={{ scale: 1.02 }}
-                                    className="group relative bg-white dark:bg-purple-900/50 rounded-2xl shadow-lg overflow-hidden backdrop-blur-lg"
+                                    className="group relative bg-gray-800 rounded-2xl shadow-lg overflow-hidden backdrop-blur-lg border border-gray-700"
                                 >
                                     {/* Event image section */}
                                     <div className="relative h-60">
@@ -145,22 +145,22 @@ export default function Home() {
                                             className="object-cover"
                                         />
                                         <Badge
-                                            key={`${event.id}-badge`} // Unique key for badge if multiple
-                                            className="absolute top-4 right-4"
+                                            key={`${event.id}-badge`}
+                                            className="absolute top-4 right-4 bg-indigo-900/80 text-indigo-200 hover:bg-indigo-800"
                                         >
                                             {event.category}
                                         </Badge>
                                     </div>
 
                                     <div className="p-6 lg:p-8">
-                                        <h3 className="text-2xl font-bold mb-4 text-purple-900 dark:text-purple-100">
+                                        <h3 className="text-2xl font-bold mb-4 text-gray-100 group-hover:text-indigo-300 transition-colors">
                                             {event.title}
                                         </h3>
 
                                         <div className="flex flex-col gap-3 mb-6">
-                                            <div className="flex items-center gap-3 text-purple-600 dark:text-purple-300">
+                                            <div className="flex items-center gap-3 text-indigo-300">
                                                 <CalendarIcon className="h-5 w-5 flex-shrink-0" />
-                                                <span className="text-sm font-medium">
+                                                <span className="text-sm font-medium text-gray-300">
                                                     {new Date(event.date).toLocaleDateString('en-US', {
                                                         weekday: 'long',
                                                         year: 'numeric',
@@ -169,26 +169,26 @@ export default function Home() {
                                                     })}
                                                 </span>
                                             </div>
-                                            <div className="flex items-center gap-3 text-purple-600 dark:text-purple-300">
+                                            <div className="flex items-center gap-3 text-indigo-300">
                                                 <MapPinIcon className="h-5 w-5 flex-shrink-0" />
-                                                <span className="text-sm font-medium">{event.location}</span>
+                                                <span className="text-sm font-medium text-gray-300">{event.location}</span>
                                             </div>
                                         </div>
 
-                                        <p className="text-gray-600 dark:text-gray-300 mb-6 line-clamp-3 leading-relaxed">
+                                        <p className="text-gray-400 mb-6 line-clamp-3 leading-relaxed">
                                             {event.description}
                                         </p>
 
                                         <div className="flex justify-between items-center">
                                             <div className="flex items-center gap-2">
-                                                <span className="text-2xl font-bold bg-gradient-to-r from-purple-600 to-pink-600 bg-clip-text text-transparent">
+                                                <span className="text-2xl font-bold bg-gradient-to-r from-indigo-400 to-blue-300 bg-clip-text text-transparent">
                                                     ${event.price}
                                                 </span>
-                                                <span className="text-sm text-gray-500 dark:text-gray-400">/person</span>
+                                                <span className="text-sm text-gray-500">/person</span>
                                             </div>
                                             <Button
                                                 onClick={() => handleBookNow(event.id)}
-                                                className="bg-purple-600 hover:bg-purple-700 dark:bg-purple-700 dark:hover:bg-purple-800 px-6 py-3 rounded-xl shadow-lg hover:shadow-purple-400/20 transition-all"
+                                                className="bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white px-6 py-3 rounded-xl shadow-lg hover:shadow-indigo-700/20 transition-all"
                                             >
                                                 Book Now
                                             </Button>
@@ -205,10 +205,10 @@ export default function Home() {
                             animate={{ opacity: 1 }}
                             className="text-center py-16"
                         >
-                            <div className="inline-block bg-purple-100/50 dark:bg-purple-900/30 p-8 rounded-3xl backdrop-blur-lg">
+                            <div className="inline-block bg-gray-800/80 p-8 rounded-3xl backdrop-blur-lg shadow-lg border border-gray-700">
                                 <div className="text-4xl mb-4">🎭</div>
-                                <h2 className="text-3xl font-bold mb-4">No events found</h2>
-                                <p className="text-gray-600 dark:text-gray-400 max-w-md mx-auto">
+                                <h2 className="text-3xl font-bold mb-4 text-indigo-300">No events found</h2>
+                                <p className="text-gray-400 max-w-md mx-auto">
                                     Try adjusting your search terms or explore our popular categories
                                 </p>
                             </div>

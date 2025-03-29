@@ -1,4 +1,3 @@
-// src/components/events/EventCreateForm.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -23,6 +22,7 @@ import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover
 import { CalendarIcon } from "lucide-react";
 import { format } from "date-fns";
 import { cn } from "@/lib/utils";
+import { motion } from 'framer-motion';
 
 // Zod validation schema for event creation
 const eventCreateSchema = z.object({
@@ -73,184 +73,217 @@ export function EventCreateForm() {
   };
 
   return (
-    <div className="max-w-2xl mx-auto mt-10 p-8 bg-white rounded-xl shadow-lg">
-      <h2 className="text-3xl font-bold mb-6 text-center text-gray-800">Create New Event</h2>
-      <Form {...form}>
-        <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
-          {error && (
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-              {error}
-            </div>
-          )}
-          
-          {/* Event Title */}
-          <FormField
-            control={form.control}
-            name="title"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Event Title</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Enter event title" 
-                    {...field} 
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+    <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-950 py-12 px-4">
+      <div className="absolute inset-0 bg-[url('/grid.svg')] bg-[size:40px_40px] opacity-10" />
+      
+      <motion.div 
+        initial={{ opacity: 0, y: 20 }}
+        animate={{ opacity: 1, y: 0 }}
+        className="max-w-2xl mx-auto backdrop-blur-lg bg-gray-800/50 p-8 rounded-2xl shadow-xl border border-gray-700"
+      >
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.1 }}
+        >
+          <h2 className="text-3xl font-bold mb-6 text-center bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">
+            Create New Event
+          </h2>
+        </motion.div>
 
-          {/* Description */}
-          <FormField
-            control={form.control}
-            name="description"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Description</FormLabel>
-                <FormControl>
-                  <Textarea
-                    placeholder="Describe your event" 
-                    {...field} 
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
+        <Form {...form}>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, x: -10 }}
+                animate={{ opacity: 1, x: 0 }}
+                className="bg-gradient-to-r from-rose-600/20 to-pink-500/20 border border-rose-600/30 text-rose-300 px-4 py-3 rounded-xl" 
+                role="alert"
+              >
+                {error}
+              </motion.div>
             )}
-          />
-
-          {/* Date Picker */}
-          <FormField
-            control={form.control}
-            name="date"
-            render={({ field }) => (
-              <FormItem className="flex flex-col">
-                <FormLabel className="text-gray-700">Event Date</FormLabel>
-                <Popover>
-                  <PopoverTrigger asChild>
-                    <FormControl>
-                      <Button
-                        variant={"outline"}
-                        className={cn(
-                          "w-full pl-3 text-left font-normal",
-                          !field.value && "text-muted-foreground"
-                        )}
-                      >
-                        {field.value ? (
-                          format(field.value, "PPP")
-                        ) : (
-                          <span>Pick a date</span>
-                        )}
-                        <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
-                      </Button>
-                    </FormControl>
-                  </PopoverTrigger>
-                  <PopoverContent className="w-auto p-0" align="start">
-                    <Calendar
-                      mode="single"
-                      selected={field.value}
-                      onSelect={field.onChange}
-                      disabled={(date) => date < new Date()}
-                      initialFocus
+            
+            {/* Event Title */}
+            <FormField
+              control={form.control}
+              name="title"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-300">Event Title</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Enter event title" 
+                      {...field} 
+                      className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12"
                     />
-                  </PopoverContent>
-                </Popover>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+                  </FormControl>
+                  <FormMessage className="text-rose-300" />
+                </FormItem>
+              )}
+            />
 
-          {/* Location */}
-          <FormField
-            control={form.control}
-            name="location"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Location</FormLabel>
-                <FormControl>
-                  <Input 
-                    placeholder="Event location" 
-                    {...field} 
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+            {/* Description */}
+            <FormField
+              control={form.control}
+              name="description"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-300">Description</FormLabel>
+                  <FormControl>
+                    <Textarea
+                      placeholder="Describe your event" 
+                      {...field} 
+                      className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl min-h-24"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-rose-300" />
+                </FormItem>
+              )}
+            />
 
-          {/* Price */}
-          <FormField
-            control={form.control}
-            name="price"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Ticket Price (Optional)</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="0" 
-                    {...field} 
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+            {/* Date Picker */}
+            <FormField
+              control={form.control}
+              name="date"
+              render={({ field }) => (
+                <FormItem className="flex flex-col">
+                  <FormLabel className="text-indigo-300">Event Date</FormLabel>
+                  <Popover>
+                    <PopoverTrigger asChild>
+                      <FormControl>
+                        <Button
+                          variant={"outline"}
+                          className={cn(
+                            "w-full pl-3 text-left font-normal h-12 rounded-xl",
+                            "bg-gray-900/60 border-gray-700 text-gray-200",
+                            !field.value && "text-gray-500"
+                          )}
+                        >
+                          {field.value ? (
+                            format(field.value, "PPP")
+                          ) : (
+                            <span>Pick a date</span>
+                          )}
+                          <CalendarIcon className="ml-auto h-4 w-4 opacity-50" />
+                        </Button>
+                      </FormControl>
+                    </PopoverTrigger>
+                    <PopoverContent className="w-auto p-0 bg-gray-800 border-gray-700" align="start">
+                      <Calendar
+                        mode="single"
+                        selected={field.value}
+                        onSelect={field.onChange}
+                        disabled={(date) => date < new Date()}
+                        initialFocus
+                        className="bg-gray-800 text-gray-200"
+                      />
+                    </PopoverContent>
+                  </Popover>
+                  <FormMessage className="text-rose-300" />
+                </FormItem>
+              )}
+            />
 
-          {/* Total Seats */}
-          <FormField
-            control={form.control}
-            name="total_seats"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Total Seats</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="number" 
-                    placeholder="Number of seats" 
-                    {...field} 
-                    onChange={(e) => field.onChange(Number(e.target.value))}
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+            {/* Location */}
+            <FormField
+              control={form.control}
+              name="location"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-300">Location</FormLabel>
+                  <FormControl>
+                    <Input 
+                      placeholder="Event location" 
+                      {...field} 
+                      className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-rose-300" />
+                </FormItem>
+              )}
+            />
 
-          {/* Organizer Email */}
-          <FormField
-            control={form.control}
-            name="organizer_email"
-            render={({ field }) => (
-              <FormItem>
-                <FormLabel className="text-gray-700">Organizer Email</FormLabel>
-                <FormControl>
-                  <Input 
-                    type="email"
-                    placeholder="Your email" 
-                    {...field} 
-                    className="border-gray-300 focus:border-blue-500"
-                  />
-                </FormControl>
-                <FormMessage className="text-red-500" />
-              </FormItem>
-            )}
-          />
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              {/* Price */}
+              <FormField
+                control={form.control}
+                name="price"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-indigo-300">Ticket Price</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        placeholder="0" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-rose-300" />
+                  </FormItem>
+                )}
+              />
 
-          <Button 
-            type="submit" 
-            className="w-full bg-blue-600 hover:bg-blue-700 text-white"
-          >
-            Create Event
-          </Button>
-        </form>
-      </Form>
+              {/* Total Seats */}
+              <FormField
+                control={form.control}
+                name="total_seats"
+                render={({ field }) => (
+                  <FormItem>
+                    <FormLabel className="text-indigo-300">Total Seats</FormLabel>
+                    <FormControl>
+                      <Input 
+                        type="number" 
+                        placeholder="Number of seats" 
+                        {...field} 
+                        onChange={(e) => field.onChange(Number(e.target.value))}
+                        className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12"
+                      />
+                    </FormControl>
+                    <FormMessage className="text-rose-300" />
+                  </FormItem>
+                )}
+              />
+            </div>
+
+            {/* Organizer Email */}
+            <FormField
+              control={form.control}
+              name="organizer_email"
+              render={({ field }) => (
+                <FormItem>
+                  <FormLabel className="text-indigo-300">Organizer Email</FormLabel>
+                  <FormControl>
+                    <Input 
+                      type="email"
+                      placeholder="Your email" 
+                      {...field} 
+                      className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12"
+                    />
+                  </FormControl>
+                  <FormMessage className="text-rose-300" />
+                </FormItem>
+              )}
+            />
+
+            <motion.div
+              initial={{ opacity: 0, y: 10 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ delay: 0.2 }}
+              className="pt-4"
+            >
+              <Button 
+                type="submit" 
+                className="w-full bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white rounded-xl py-3 h-12 shadow-lg hover:shadow-indigo-700/20 transition-all font-medium"
+              >
+                Create Event
+              </Button>
+            </motion.div>
+          </form>
+        </Form>
+      </motion.div>
     </div>
   );
 }

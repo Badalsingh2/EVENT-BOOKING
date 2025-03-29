@@ -1,4 +1,3 @@
-// src/components/events/BookingModal.tsx
 'use client';
 
 import React, { useState } from 'react';
@@ -9,6 +8,7 @@ import { Label } from "@/components/ui/label";
 import { eventService } from '@/lib/api';
 import { useAuth } from '@/context/AuthContext';
 import { handleApiError } from '@/lib/error-handler';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface BookingModalProps {
   event: {
@@ -60,67 +60,99 @@ export function BookingModal({
 
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
-      <DialogContent className="sm:max-w-[425px]">
-        <DialogHeader>
-          <DialogTitle>Book Event: {event.title}</DialogTitle>
-          <DialogDescription>
-            Confirm your booking for this event
-          </DialogDescription>
-        </DialogHeader>
+      <DialogContent className="sm:max-w-md backdrop-blur-lg bg-gray-800/90 border border-gray-700 shadow-xl rounded-2xl p-0 overflow-hidden">
+        <motion.div
+          initial={{ opacity: 0, y: -10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.3 }}
+        >
+          <DialogHeader className="px-6 pt-6 pb-2">
+            <DialogTitle className="text-2xl font-bold bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 bg-clip-text text-transparent">
+              Book Event: {event.title}
+            </DialogTitle>
+            <DialogDescription className="text-gray-400 mt-2">
+              Confirm your booking for this event
+            </DialogDescription>
+          </DialogHeader>
+        </motion.div>
         
-        <div className="grid gap-4 py-4">
-          {/* Event Details */}
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Price</Label>
-            <span className="col-span-3">
-              {event.price > 0 ? `$${event.price}` : 'Free'}
-            </span>
-          </div>
+        <motion.div 
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ delay: 0.1 }}
+          className="px-6 py-4"
+        >
+          <div className="space-y-5">
+            {/* Event Details */}
+            <div className="bg-gray-900/60 p-4 rounded-xl border border-gray-700 space-y-3">
+              <div className="flex justify-between items-center">
+                <span className="text-indigo-300">Price</span>
+                <span className="font-semibold text-gray-200">
+                  {event.price > 0 ? `$${event.price.toFixed(2)}` : 'Free'}
+                </span>
+              </div>
 
-          <div className="grid grid-cols-4 items-center gap-4">
-            <Label className="text-right">Available Seats</Label>
-            <span className="col-span-3">
-              {event.available_seats}
-            </span>
-          </div>
-
-          {/* User Email */}
-          {user && (
-            <div className="grid grid-cols-4 items-center gap-4">
-              <Label className="text-right">Email</Label>
-              <Input 
-                value={user.email} 
-                disabled 
-                className="col-span-3" 
-              />
+              <div className="flex justify-between items-center">
+                <span className="text-indigo-300">Available Seats</span>
+                <span className={`font-semibold ${event.available_seats > 0 ? 'text-green-400' : 'text-rose-400'}`}>
+                  {event.available_seats}
+                </span>
+              </div>
             </div>
-          )}
-        </div>
 
-        {/* Error Display */}
-        {error && (
-          <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative">
-            {error}
+            {/* User Email */}
+            {user && (
+              <div className="space-y-2">
+                <Label className="text-indigo-300">Email</Label>
+                <Input 
+                  value={user.email} 
+                  disabled 
+                  className="bg-gray-900/60 border-gray-700 placeholder-gray-500 text-gray-200 focus:border-indigo-500 rounded-xl h-12" 
+                />
+              </div>
+            )}
           </div>
-        )}
 
-        <DialogFooter>
-          <Button 
-            type="button" 
-            variant="outline" 
-            onClick={onClose}
-            disabled={loading}
-          >
-            Cancel
-          </Button>
-          <Button 
-            type="submit" 
-            onClick={handleBooking}
-            disabled={loading || event.available_seats === 0}
-          >
-            {loading ? 'Booking...' : 'Confirm Booking'}
-          </Button>
-        </DialogFooter>
+          {/* Error Display */}
+          <AnimatePresence>
+            {error && (
+              <motion.div 
+                initial={{ opacity: 0, y: -10 }}
+                animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -10 }}
+                className="bg-gradient-to-r from-rose-600/20 to-pink-500/20 border border-rose-600/30 text-rose-300 px-4 py-3 rounded-xl mt-5"
+              >
+                {error}
+              </motion.div>
+            )}
+          </AnimatePresence>
+        </motion.div>
+
+        <motion.div 
+          initial={{ opacity: 0, y: 10 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.2 }}
+        >
+          <DialogFooter className="bg-gray-900/30 px-6 py-4 border-t border-gray-700 gap-3">
+            <Button 
+              type="button" 
+              variant="outline" 
+              onClick={onClose}
+              disabled={loading}
+              className="border-gray-600 text-gray-300 hover:bg-gray-700 hover:text-gray-100 rounded-xl"
+            >
+              Cancel
+            </Button>
+            <Button 
+              type="submit" 
+              onClick={handleBooking}
+              disabled={loading || event.available_seats === 0}
+              className={`bg-gradient-to-r from-indigo-600 to-blue-500 hover:from-indigo-700 hover:to-blue-600 text-white rounded-xl py-2 shadow-lg hover:shadow-indigo-700/20 transition-all font-medium ${event.available_seats === 0 ? 'opacity-50 cursor-not-allowed' : ''}`}
+            >
+              {loading ? 'Booking...' : event.available_seats === 0 ? 'Sold Out' : 'Confirm Booking'}
+            </Button>
+          </DialogFooter>
+        </motion.div>
       </DialogContent>
     </Dialog>
   );
