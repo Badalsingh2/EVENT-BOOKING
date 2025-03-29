@@ -4,6 +4,7 @@ from jose import JWTError, jwt
 from app.core.config import SECRET_KEY, ALGORITHM
 from app.models.user import RoleEnum, UserInDB
 from bson import ObjectId
+from app.core.security import db
 
 oauth2_scheme = OAuth2PasswordBearer(tokenUrl="token")
 

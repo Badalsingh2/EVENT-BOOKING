@@ -2,7 +2,12 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr, Field, ConfigDict
 from enum import Enum
-from typing import Optional
+from typing import List, Optional
+
+
+class BookingEntry(BaseModel):
+    event_id: str
+    user_email: str
 
 class RoleEnum(str, Enum):
     admin = "admin"
@@ -55,3 +60,5 @@ class UserInDB(UserBase):
     status: Optional[OrganizerStatus] = None
     disabled: bool = False
     created_at: datetime
+    booked_events: List[BookingEntry] = []  # Stores event IDs as strings
+

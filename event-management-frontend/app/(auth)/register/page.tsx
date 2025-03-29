@@ -29,7 +29,7 @@ export default function RegisterPage() {
     
     try {
       await register(formData)
-      router.push('/dashboard')
+      router.push('/')
     } catch (err: any) {
       console.error("Registration error:", err)
       setError(err.message || 'Registration failed. Please try again.')
@@ -39,7 +39,7 @@ export default function RegisterPage() {
   }
 
   return (
-    <AppLayout>
+    <>
       <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-slate-800 to-gray-950 p-4">
         <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
           <div className="text-center">
@@ -195,6 +195,6 @@ export default function RegisterPage() {
           </div>
         </div>
       </div>
-    </AppLayout>
+    </>
   )
 }

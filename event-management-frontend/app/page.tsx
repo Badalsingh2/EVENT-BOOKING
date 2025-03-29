@@ -6,8 +6,11 @@ import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
 import { Button } from '@/components/ui/button';
 import { Skeleton } from '@/components/ui/skeleton';
-import { toast } from 'react-hot-toast';
+import { toast, Toaster } from 'react-hot-toast';
 import { Badge } from '@/components/ui/badge';
+import AnimatedBackground from '@/components/animated-background'; // Import the new component
+import { useRouter } from "next/navigation";
+import AnimatedHeadline from "@/components/animated-template";
 
 interface Event {
     id: string;
@@ -15,7 +18,7 @@ interface Event {
     date: string;
     location: string;
     price: number;
-    image: string;
+    image_url: string;
     description: string;
     category: string;
 }
@@ -24,6 +27,7 @@ export default function Home() {
     const [events, setEvents] = useState<Event[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
+    const router = useRouter()
 
     useEffect(() => {
         const fetchEvents = async () => {
@@ -42,33 +46,82 @@ export default function Home() {
     }, []);
 
     const handleBookNow = async (eventId: string) => {
+        const token = localStorage.getItem('token');
+        const userData = localStorage.getItem('user'); // Retrieve user data from localStorage
+    
+        if (!token) {
+            toast.error('You should login first!');
+            setTimeout(() => {
+                router.push('/login'); // Redirect to login page after 3 seconds
+            }, 3000);
+            return;
+        }
+    
+        if (!userData) {
+            toast.error('User data not found. Please log in again.');
+            setTimeout(() => {
+                router.push('/login'); // Redirect to login page after 3 seconds
+            }, 3000);
+            return;
+        }
+    
+        // Parse the stored user data and extract email
+        let userEmail = "";
         try {
-            const response = await fetch('/api/bookings', {
+            const user = JSON.parse(userData); // Convert string to object
+            userEmail = user.email; // Extract email
+        } catch (error) {
+            console.error("Error parsing user data:", error);
+            toast.error('Invalid user data. Please log in again.');
+            setTimeout(() => {
+                router.push('/login');
+            }, 3000);
+            return;
+        }
+    
+        try {
+            const response = await fetch('http://127.0.0.1:8000/bookings/book', {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify({ eventId }),
+                body: JSON.stringify({ user_email: userEmail, event_id: eventId }), // Send both user_email & event_id
             });
-
+    
             if (response.ok) {
                 toast.success('Event booked successfully!');
             } else {
-                toast.error('Booking failed');
+                const errorData = await response.json();
+                toast.error(`Booking failed: ${errorData.detail || 'Unknown error'}`);
             }
         } catch (error) {
             toast.error('Error processing booking');
+            console.error('Booking error:', error);
         }
     };
-
+    
+    
     const filteredEvents = events.filter(event =>
         event.title.toLowerCase().includes(searchQuery.toLowerCase()) ||
         event.location.toLowerCase().includes(searchQuery.toLowerCase())
     );
 
     return (
-        <AppLayout>
-            <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-950">
+        <>
+            <div className="min-h-screen bg-gradient-to-b from-gray-900 via-slate-800 to-gray-950 relative">
+                {/* Add the animated background */}
+                <AnimatedBackground />
+                <Toaster
+                    position="top-right"
+                    toastOptions={{
+                        style: {
+                            background: '#1e293b',
+                            color: '#fff',
+                            borderRadius: '0.75rem',
+                        },
+                    }}
+                />
                 {/* Hero Section */}
                 <div className="relative h-[600px] flex items-center justify-center overflow-hidden">
                     <div className="absolute inset-0 bg-gradient-to-br from-indigo-900/30 via-blue-900/20 to-purple-900/30" />
@@ -79,19 +132,13 @@ export default function Home() {
                         animate={{ scale: 1, opacity: 1 }}
                         className="text-center z-10 px-4 max-w-4xl w-full"
                     >
-                        <motion.h1
-                            initial={{ opacity: 0, y: 20 }}
-                            animate={{ opacity: 1, y: 0 }}
-                            className="text-5xl md:text-7xl font-bold mb-6 bg-gradient-to-r from-indigo-400 via-blue-300 to-purple-400 bg-clip-text text-transparent leading-tight"
-                        >
-                            Experience Unforgettable <br /> Moments
-                        </motion.h1>
+                        <AnimatedHeadline/>
 
                         <motion.div
                             initial={{ opacity: 0, y: 10 }}
                             animate={{ opacity: 1, y: 0 }}
                             transition={{ delay: 0.2 }}
-                            className="relative max-w-2xl mx-auto"
+                            className="relative max-w-2xl mx-auto mt-6"
                         >
                             <input
                                 type="text"
@@ -107,8 +154,10 @@ export default function Home() {
                     </motion.div>
                 </div>
 
+                {/* Rest of your existing code remains the same */}
                 {/* Events Grid */}
-                <div className="container mx-auto px-4 py-12 lg:py-16">
+                <div className="container mx-auto px-4 py-12 lg:py-16 relative z-10">
+                    {/* Your existing events grid code... */}
                     {loading ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
                             {[...Array(6)].map((_, i) => (
@@ -139,7 +188,7 @@ export default function Home() {
                                     {/* Event image section */}
                                     <div className="relative h-60">
                                         <Image
-                                            src={event.image || '/placeholder-event.jpg'}
+                                            src={event.image_url || '/placeholder-event.jpg'}
                                             alt={event.title}
                                             fill
                                             className="object-cover"
@@ -216,7 +265,7 @@ export default function Home() {
                     )}
                 </div>
             </div>
-        </AppLayout>
+        </>
     );
 }
 

@@ -1,15 +1,19 @@
+
 from dotenv import load_dotenv
+from app.models.user import UserInDB
 load_dotenv()  # Ensure .env is loaded
-from fastapi import FastAPI
+from app.core.security import get_current_user
+from fastapi import FastAPI,APIRouter,Depends,HTTPException
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
 import os
 from app.routers import auth, event_routes, booking_routes,organizers,admin
-from app.core.database import db
+from app.core.config import db
+from bson import ObjectId
 
 # Initialize FastAPI app
 app = FastAPI(title="Event Management API", description="API for managing events and bookings")
-
+router = APIRouter()
 # CORS Configuration
 app.add_middleware(
     CORSMiddleware,
@@ -50,3 +54,7 @@ async def test_db_connection():
 async def startup_db_client():
     # Initialize database connection
     pass  # Connection is already handled in database.py
+
+import logging
+
+

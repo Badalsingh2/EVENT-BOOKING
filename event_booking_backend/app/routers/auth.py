@@ -89,10 +89,12 @@ async def login(credentials: UserLogin):
     })
 
     return {
+        "id":str(db_user["_id"]),
         "access_token": access_token,
         "token_type": "bearer",
         "user_role": db_user["role"],
-        "user_status": db_user.get("status")
+        "user_status": db_user.get("status"),
+        
     }
 
 # # Admin-only endpoints

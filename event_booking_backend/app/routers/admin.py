@@ -12,6 +12,7 @@ from app.core.security import get_current_admin
 from app.core.database import db
 from datetime import datetime
 import os
+from app.models.event import Event
 
 router = APIRouter(prefix="/admin", tags=["admin"])
 
@@ -183,3 +184,11 @@ async def delete_organizer(
         raise HTTPException(status.HTTP_500_INTERNAL_SERVER_ERROR, detail="Failed to delete organizer")
 
     return {"message": "Organizer deleted successfully"}
+
+
+@router.get("/all_events", response_model=List[Event])
+async def list_approved_events(admin: dict = Depends(get_current_admin)  ):
+    events = await db.events.find().to_list(100)
+    for event in events:
+        event["id"] = str(event["_id"])  # Convert ObjectId to string
+    return events

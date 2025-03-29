@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter } from 'next/navigation'
 import { createContext, useContext, useState, ReactNode, useEffect } from 'react'
 
 type User = {
@@ -20,7 +21,7 @@ const AuthContext = createContext<AuthContextType | null>(null)
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [user, setUser] = useState<User | null>(null)
-
+  const router = useRouter()
   useEffect(() => {
     const storedUser = localStorage.getItem('user')
     if (storedUser) {
@@ -75,6 +76,8 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     localStorage.removeItem('user')
     localStorage.removeItem('token')
     setUser(null)
+    router.push("/")
+
   }
 
   return (

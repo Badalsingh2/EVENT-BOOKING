@@ -37,7 +37,7 @@ export default function LoginPage() {
                 // Redirect based on user role
                 switch (user.role?.toLowerCase()) {
                     case 'admin':
-                        router.push('/admin/organizers')
+                        router.push('/admin')
                         break
                     case 'organizer':
                         router.push('/event')
@@ -61,7 +61,7 @@ export default function LoginPage() {
     }
 
     return (
-        <AppLayout>
+        <>
             <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-gray-900 via-slate-800 to-gray-950 p-4">
                 <div className="w-full max-w-md p-8 space-y-6 bg-gray-800 rounded-xl shadow-lg border border-gray-700">
                     <div className="text-center">
@@ -189,6 +189,6 @@ export default function LoginPage() {
                     </div>
                 </div>
             </div>
-        </AppLayout>
+        </>
     )
 }

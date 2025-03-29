@@ -41,7 +41,7 @@ export default function AdminEventsPage() {
     }
 
     try {
-      const response = await fetch('http://127.0.0.1:8000/events', {
+      const response = await fetch('http://127.0.0.1:8000/admin/all_events', {
         headers: {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json'
