@@ -66,11 +66,8 @@ export default function EventsPage() {
       setIsLoading(true)
       try {
         const token = localStorage.getItem('token')
-        const response = await fetch('http://127.0.0.1:8000/events/organizer', {
-          headers: {
-            'Authorization': `Bearer ${token}`
-          }
-        })
+        const response = await fetch('http://127.0.0.1:8000/events/');
+        
         
         if (!response.ok) throw new Error('Failed to fetch events')
         

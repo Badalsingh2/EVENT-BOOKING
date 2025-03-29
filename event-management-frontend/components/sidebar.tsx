@@ -42,7 +42,7 @@ export function Sidebar({
             label: 'Dashboard'
         },
         {
-            href: '/events',
+            href: '/event',
             icon: <RocketIcon className="h-5 w-5" />,
             label: 'Events'
         },
