@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import toast, { Toaster } from 'react-hot-toast'
 import { motion } from 'framer-motion'
 
@@ -31,7 +31,7 @@ export default function AdminOrganizersPage() {
     window.location.href = '/login'
   }
 
-  const fetchOrganizers = async () => {
+  const fetchOrganizers = useCallback(async () => {
     const token = getAuthToken()
     if (!token) {
       handleUnauthorized()
@@ -66,7 +66,7 @@ export default function AdminOrganizersPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const updateOrganizerStatus = async (userId: string, status: 'approved' | 'rejected') => {
     const token = getAuthToken()
@@ -153,7 +153,7 @@ export default function AdminOrganizersPage() {
 
   useEffect(() => {
     fetchOrganizers()
-  }, [])
+  }, [fetchOrganizers]) // Added fetchOrganizers to dependency array
 
   if (loading) {
     return (

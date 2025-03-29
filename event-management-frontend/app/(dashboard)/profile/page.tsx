@@ -9,10 +9,41 @@ import { jwtDecode } from "jwt-decode";
 import Image from "next/image";
 import { Skeleton } from "@/components/ui/skeleton";
 
+interface UserInfo {
+  full_name: string;
+  email: string;
+  role: string;
+  status?: string;
+  booked_events?: Booking[];
+}
+
+interface Booking {
+  event_id: string;
+  user_email: string;
+}
+
+interface Event {
+  id: string;
+  title: string;
+  description: string;
+  date: string;
+  location: string;
+  price: number;
+  organizer_email: string;
+  total_seats: number;
+  available_seats: number;
+  status: string;
+  image_url?: string;
+}
+
+interface BookingWithEvent extends Event {
+  user_email: string;
+}
+
 export default function UserProfilePage() {
   const { user } = useAuth();
-  const [userInfo, setUserInfo] = useState<any>(null);
-  const [bookings, setBookings] = useState<any[]>([]);
+  const [userInfo, setUserInfo] = useState<UserInfo | null>(null);
+  const [bookings, setBookings] = useState<BookingWithEvent[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
@@ -21,7 +52,7 @@ export default function UserProfilePage() {
       if (!token) return;
 
       try {
-        const decoded = jwtDecode(token);
+        const decoded = jwtDecode<{ sub?: string }>(token);
         const userId = decoded?.sub;
         if (!userId) {
           console.error("User ID not found in token");
@@ -35,9 +66,11 @@ export default function UserProfilePage() {
         });
 
         if (response.ok) {
-          const data = await response.json();
+          const data: UserInfo = await response.json();
           setUserInfo(data);
-          await fetchBookings(data.booked_events);
+          if (data.booked_events) {
+            await fetchBookings(data.booked_events);
+          }
         }
       } catch (error) {
         console.error("Error fetching data:", error);
@@ -46,7 +79,7 @@ export default function UserProfilePage() {
       }
     };
 
-    const fetchBookings = async (bookedEvents: any[]) => {
+    const fetchBookings = async (bookedEvents: Booking[]) => {
       if (!bookedEvents || bookedEvents.length === 0) return;
 
       const eventDetails = await Promise.all(
@@ -54,7 +87,7 @@ export default function UserProfilePage() {
           try {
             const response = await fetch(`http://127.0.0.1:8000/events/get_e/${booking.event_id}`);
             if (response.ok) {
-              const eventData = await response.json();
+              const eventData: Event = await response.json();
               return { ...eventData, user_email: booking.user_email };
             }
           } catch (error) {
@@ -64,11 +97,11 @@ export default function UserProfilePage() {
         })
       );
 
-      setBookings(eventDetails.filter(Boolean));
+      setBookings(eventDetails.filter(Boolean) as BookingWithEvent[]);
     };
 
     fetchUserInfo();
-  }, []);
+  }, [user]); // Added user to dependency array since we're using useAuth
 
   if (loading) {
     return (
@@ -83,6 +116,15 @@ export default function UserProfilePage() {
           <Skeleton className="w-full h-48 rounded-xl" />
         </div>
         <Skeleton className="h-96 w-full" />
+      </div>
+    );
+  }
+
+  if (!userInfo) {
+    return (
+      <div className="max-w-6xl mx-auto p-6 space-y-8">
+        <h1 className="text-4xl font-bold">Profile Not Found</h1>
+        <p>Unable to load user profile information.</p>
       </div>
     );
   }
@@ -235,7 +277,12 @@ export default function UserProfilePage() {
   );
 }
 
-function InfoItem({ label, value }: { label: string; value: string | number }) {
+interface InfoItemProps {
+  label: string;
+  value: string | number;
+}
+
+function InfoItem({ label, value }: InfoItemProps) {
   return (
     <div className="flex flex-col space-y-1">
       <span className="text-sm font-medium text-gray-500 dark:text-gray-400">{label}</span>

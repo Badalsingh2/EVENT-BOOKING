@@ -12,8 +12,8 @@ const inter = Inter({
 })
 
 export const metadata: Metadata = {
-    title: 'Your Application',
-    description: 'Application Description',
+    title: 'EventoMeter',
+    description: 'Event Management',
 }
 
 export default function RootLayout({

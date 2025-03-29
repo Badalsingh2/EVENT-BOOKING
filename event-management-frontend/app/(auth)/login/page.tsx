@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { EyeIcon, EyeOffIcon, Lock, Mail } from 'lucide-react'
-import { AppLayout } from '@/components/layout'
+
 
 export default function LoginPage() {
     const { login } = useAuth()
@@ -53,9 +53,13 @@ export default function LoginPage() {
                 setError("Login successful but user data not found")
                 setIsLoading(false)
             }
-        } catch (err: any) {
+        } catch (err: unknown) {
             console.error("Login error:", err)
-            setError(err.message || 'Invalid email or password')
+            if (err instanceof Error) {
+                setError(err.message);
+            } else {
+                setError("Invalid email or password");
+            }
             setIsLoading(false)
         }
     }
@@ -178,7 +182,7 @@ export default function LoginPage() {
 
                     <div className="text-center text-sm pt-4">
                         <span className="text-gray-400">
-                            Don't have an account?{' '}
+                            Don&apos;t have an account?{' '}
                         </span>
                         <Link
                             href="/register"

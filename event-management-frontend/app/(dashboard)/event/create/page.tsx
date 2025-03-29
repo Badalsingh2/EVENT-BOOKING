@@ -2,7 +2,7 @@
 
 import { useState } from 'react'
 import { Button } from '@/components/ui/button'
-import { Card, CardHeader, CardTitle, CardDescription, CardContent, CardFooter } from '@/components/ui/card'
+import { Card, CardHeader, CardTitle, CardDescription, CardContent } from '@/components/ui/card'
 import { Input } from '@/components/ui/input'
 import { Textarea } from '@/components/ui/textarea'
 import { Form, FormField, FormItem, FormLabel, FormControl, FormMessage } from '@/components/ui/form'
@@ -13,6 +13,7 @@ import { useAuth } from '@/context/auth-context'
 import { format } from 'date-fns'
 import { Alert, AlertDescription, AlertTitle } from '@/components/ui/alert'
 import { Loader2, AlertCircle, CameraIcon } from 'lucide-react'
+import Image from 'next/image'
 
 const eventFormSchema = z.object({
   title: z.string().min(3, "Title must be at least 3 characters"),
@@ -26,14 +27,24 @@ const eventFormSchema = z.object({
   image_url: z.string().optional()
 })
 
+interface Event {
+  title: string
+  description: string
+  date: string // ISO 8601 format: "yyyy-MM-dd'T'HH:mm"
+  location: string
+  price: number
+  total_seats: number
+  image_url: string
+}
+
 export default function CreateEvent() {
   const { user } = useAuth()
   const [isCreating, setIsCreating] = useState(false)
   const [success, setSuccess] = useState(false)
   const [error, setError] = useState<string | null>(null)
   const [imagePreview, setImagePreview] = useState<string | null>(null)
-  const [createdEvent, setCreatedEvent] = useState<any>(null)
-  
+  const [createdEvent, setCreatedEvent] = useState<Event | null>(null)
+
   const form = useForm<z.infer<typeof eventFormSchema>>({
     resolver: zodResolver(eventFormSchema),
     defaultValues: {
@@ -50,12 +61,9 @@ export default function CreateEvent() {
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
     if (file) {
-      // In a real app, you would upload this to your server/Cloudinary
-      // For this demo, we'll just set a preview
       const reader = new FileReader()
       reader.onloadend = () => {
         setImagePreview(reader.result as string)
-        // In a real implementation, you would get the URL after upload
         form.setValue("image_url", "https://res.cloudinary.com/didqk3bwj/image/upload/v1743248850/images_wujdgr.jpg")
       }
       reader.readAsDataURL(file)
@@ -80,7 +88,6 @@ export default function CreateEvent() {
           organizer_email: user?.email || "organizer@example.com",
           total_seats: values.total_seats,
           available_seats: values.total_seats,
-          // In a real app, you would handle image upload separately
           image_url: values.image_url || "https://res.cloudinary.com/didqk3bwj/image/upload/v1743248850/images_wujdgr.jpg"
         })
       })
@@ -94,9 +101,13 @@ export default function CreateEvent() {
       setCreatedEvent(newEvent)
       setSuccess(true)
       form.reset()
-    } catch (error: any) {
-      console.error('Error creating event:', error)
-      setError(error.message || 'An error occurred while creating the event')
+    } catch (err: unknown) {
+      console.error('Error creating event:', err)
+      if (err instanceof Error) {
+        setError(err.message)
+      } else {
+        setError("Invalid email or password")
+      }
     } finally {
       setIsCreating(false)
     }
@@ -132,7 +143,7 @@ export default function CreateEvent() {
           <div className="h-5 w-5 text-green-600 dark:text-green-400">✓</div>
           <AlertTitle className="text-green-800 dark:text-green-400 font-medium">Event Created Successfully</AlertTitle>
           <AlertDescription className="text-green-700 dark:text-green-300">
-            Your event "{createdEvent.title}" has been created and is pending approval.
+            Your event &quot;{createdEvent.title}&quot; has been created and is pending approval.
           </AlertDescription>
         </Alert>
       )}
@@ -265,10 +276,12 @@ export default function CreateEvent() {
                     <div className="flex flex-col items-center">
                       <div className="w-full h-48 rounded-md overflow-hidden border-2 border-dashed border-gray-300 dark:border-gray-700 flex items-center justify-center mb-3">
                         {imagePreview ? (
-                          <img 
-                            src={imagePreview} 
-                            alt="Event preview" 
-                            className="w-full h-full object-cover" 
+                          <Image
+                            src={imagePreview}
+                            alt="Event preview"
+                            width={256}
+                            height={192}
+                            className="w-full h-full object-cover"
                           />
                         ) : (
                           <div className="text-center p-4">

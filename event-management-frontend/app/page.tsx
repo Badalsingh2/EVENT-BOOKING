@@ -1,6 +1,6 @@
 "use client"
 
-import { AppLayout } from "@/components/layout";
+
 import Image from "next/image";
 import { useEffect, useState } from 'react';
 import { motion } from 'framer-motion';
@@ -35,9 +35,10 @@ export default function Home() {
                 const res = await fetch('http://127.0.0.1:8000/events/');
                 const data = await res.json();
                 setEvents(data);
-            } catch (error) {
+            } catch (err) {
+                console.error("Error loading events:", err);  // Logs the error for debugging
                 toast.error('Failed to load events');
-            } finally {
+            }finally {
                 setLoading(false);
             }
         };

@@ -1,6 +1,6 @@
 // src/lib/api.ts
 import { Booking } from '@/types/booking';
-import { OrganizerStatus, UserCreate, UserLogin } from '@/types/user';
+import { OrganizerStatus, UserCreate } from '@/types/user';
 import axios from 'axios';
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL || 'http://localhost:8000';

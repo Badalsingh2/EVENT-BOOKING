@@ -7,7 +7,7 @@ import { Button } from '@/components/ui/button'
 import { Input } from '@/components/ui/input'
 import Link from 'next/link'
 import { EyeIcon, EyeOffIcon, Lock, Mail, User, UserPlus } from 'lucide-react'
-import { AppLayout } from '@/components/layout'
+
 
 export default function RegisterPage() {
   const { register } = useAuth()
@@ -30,9 +30,13 @@ export default function RegisterPage() {
     try {
       await register(formData)
       router.push('/')
-    } catch (err: any) {
+    } catch (err: unknown) {
       console.error("Registration error:", err)
-      setError(err.message || 'Registration failed. Please try again.')
+      if (err instanceof Error) {
+        setError(err.message);
+    } else {
+        setError("Invalid email or password");
+    }
     } finally {
       setIsLoading(false)
     }

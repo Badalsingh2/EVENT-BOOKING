@@ -1,6 +1,6 @@
 'use client'
 
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState, useCallback } from 'react'
 import { toast, Toaster } from 'react-hot-toast'
 import { motion } from 'framer-motion'
 
@@ -33,7 +33,7 @@ export default function AdminEventsPage() {
     window.location.href = '/login'
   }
 
-  const fetchEvents = async () => {
+  const fetchEvents = useCallback(async () => {
     const token = getAuthToken()
     if (!token) {
       handleUnauthorized()
@@ -69,7 +69,7 @@ export default function AdminEventsPage() {
     } finally {
       setLoading(false)
     }
-  }
+  }, [])
 
   const updateEventStatus = async (eventId: string, status: 'approved' | 'rejected') => {
     const token = getAuthToken()
@@ -112,7 +112,7 @@ export default function AdminEventsPage() {
 
   useEffect(() => {
     fetchEvents()
-  }, [])
+  }, [fetchEvents]) // Added fetchEvents to dependency array
 
   if (loading) {
     return (
