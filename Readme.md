@@ -83,12 +83,10 @@ The Event Management System is a web-based platform that allows users to browse,
 
 ## Deployment
 1. **Backend**
-   - Deploy FastAPI on an AWS EC2 instance
-   - Set up Nginx as a reverse proxy
+  - Deployed on Render FastAPI
 
 2. **Frontend**
-   - Deploy Next.js frontend on the same EC2 instance
-   - Use PM2 for process management
+   - Deployed on Vercel nextjs
 
 ## Future Enhancements
 - Add email notifications for bookings
