@@ -101,30 +101,35 @@ async def get_user_details(user_id: str):
 
     # ✅ Ensure booked_events only contains event_id and user_email
     if "booked_events" in user_data:
-        event_ids = [
-            str(event["_id"]) if isinstance(event, dict) and "_id" in event else event
-            for event in user_data["booked_events"]
-        ]
-
-        # ✅ Fetch event details safely and ensure required fields exist
         booked_events = []
-        for event_id in event_ids:
-            event = await db.events.find_one({"_id": ObjectId(event_id)})
-            if event:
+        for event in user_data["booked_events"]:
+            event_id = event.get("event_id")  # Extract event_id safely
+
+            if not isinstance(event_id, str):  # Ensure it's a string
+                continue
+
+            try:
+                obj_event_id = ObjectId(event_id)  # Convert to ObjectId
+            except:
+                continue  # Skip invalid event_id
+
+            # ✅ Fetch event details safely
+            event_data = await db.events.find_one({"_id": obj_event_id})
+            if event_data:
                 booked_events.append({
-                    "event_id": str(event["_id"]),
-                    "user_email": user_data.get("email", ""),  # Ensure user_email is included
-                    "title": event["title"],
-                    "description": event["description"],
-                    "date": event["date"],
-                    "location": event["location"],
-                    "price": event["price"],
-                    "organizer_email": event["organizer_email"],
-                    "total_seats": event["total_seats"],
-                    "available_seats": event["available_seats"],
-                    "status": event["status"],
-                    "organizer_id": str(event["organizer_id"]),
-                    "image_url": event["image_url"],
+                    "event_id": str(event_data["_id"]),
+                    "user_email": user_data.get("email", ""),
+                    "title": event_data.get("title", ""),
+                    "description": event_data.get("description", ""),
+                    "date": event_data.get("date", ""),
+                    "location": event_data.get("location", ""),
+                    "price": event_data.get("price", ""),
+                    "organizer_email": event_data.get("organizer_email", ""),
+                    "total_seats": event_data.get("total_seats", 0),
+                    "available_seats": event_data.get("available_seats", 0),
+                    "status": event_data.get("status", ""),
+                    "organizer_id": str(event_data.get("organizer_id", "")),
+                    "image_url": event_data.get("image_url", ""),
                 })
 
         user_data["booked_events"] = booked_events  # ✅ Ensure correct format
