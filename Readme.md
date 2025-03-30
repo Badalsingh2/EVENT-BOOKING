@@ -74,7 +74,7 @@ The Event Management System is a web-based platform that allows users to browse,
 - **Password:** `badal159`
 
 ### Organizer
-- **Username:** `12badal@gmail.com`
+- **Username:** `12badal@example.com`
 - **Password:** `SecurePass123!`
 
 ### Admin
